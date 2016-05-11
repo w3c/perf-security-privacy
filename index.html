@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Performance API’s, Security and Privacy</title>
+  <title>Performance API's, Security and Privacy</title>
   <meta charset='utf-8'>
   <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class=
   'remove'>
@@ -40,18 +40,27 @@
       }]
     }],
     localBiblio: {
+      'REPORTING': {
+        title: 'Reporting API',
+        href: 'https://w3c.github.io/reporting',
+        authors: [
+          'Ilya Grigorik',
+          'Mike West'
+        ],
+        date: 'March 11 2016'
+      }
     }
   };
   </script>
 </head>
 <body>
   <section id='abstract'>
-    <p>The fact that something is possible to measure, and may even be
+    <p>The fact that something is possible to measure, and may even be highly
     desirable and useful to expose to developers, does not meant that it can be
     exposed as runtime JavaScript API in the browser, due to various privacy
     and security constraints. The goal of this document is to explain why that
     is the case, and to provide guidance for what needs to be considered when
-    making or evaluating a proposal for such API’s.</p>
+    making or evaluating a proposal for such API's.</p>
   </section>
   <section id='sotd'>
     <p>This is a <strong>work in progress</strong> and may change without any
@@ -65,7 +74,7 @@
     response payload, etc); rendering insights (cost of layout and style
     recalculations, image decoding, per-layer rendering costs, idle time, etc);
     CPU and memory profiling; JavaScript debugging, and much more. As a
-    developer, you can open the “developer tools” console in any browser and
+    developer, you can open the "developer tools" console in any browser and
     get immediate access to a rich set of data:</p>
     <ul>
       <li>The data is offered with high-resolution: in real-time, with accurate
@@ -74,30 +83,30 @@
       the site or not.</li>
     </ul>
     <p>However, experience shows that data gathered in this mode—by the
-    developer, on their own “development” machine—is not sufficient. Real users
-    run applications on vast array of different hardware and under different
+    developer, on their own "development" machine—is not sufficient. Real users
+    run applications on a vast array of different hardware and under different
     conditions that are hard or impossible to replicate—and even anticipate—in
     the lab. Hence, <dfn data-lt="RUM">Real User Monitoring</dfn> (RUM), which
-    provides a restricted subset of performance API’s and metrics.</p>
+    provides a restricted subset of performance API's and metrics.</p>
     <p>Why restricted? Due to a number of privacy and security
     considerations:</p>
     <ol>
       <li>The fact that a certain capability or metric can be recorded by the
-      platform or browser, and may even be exposed in browser’s developer
+      platform or browser, and may even be exposed in browser's developer
       tools, does not automatically mean that it should or can be exposed as a
       runtime API, because such data may reveal private or sensitive
       information about the visitor.</li>
-      <li>API’s and metrics that are exposed at runtime to the application
-      (i.e. <a>RUM</a> API’s) must take additional precautions against
+      <li>API's and metrics that are exposed at runtime to the application
+      (i.e. <a>RUM</a> API's) must take additional precautions against
       unintentionally exposing new or more accurate privacy and security
       attacks against the visitor:
         <ol>
-          <li>Some API’s and metrics may require additional opt-in
+          <li>Some API's and metrics may require additional opt-in
           mechanisms.</li>
-          <li>Some API’s and metrics may need to provide data at lower
+          <li>Some API's and metrics may need to provide data at lower
           resolution - e.g. through reduced accuracy, aggregation, delayed or
           out-of-band delivery, etc.</li>
-          <li>Some API’s and metrics may not be possible to expose at all, even
+          <li>Some API's and metrics may not be possible to expose at all, even
           with above precautions in place.</li>
         </ol>
       </li>
@@ -106,12 +115,12 @@
     is even highly desirable and useful to many developers, does not mean that
     it can be exposed as a runtime JavaScript API.** The goal of this document
     is to explain why that is the case, and to provide guidance for what needs
-    to be considered when making or evaluating a proposal for such API’s.</p>
+    to be considered when making or evaluating a proposal for such API's.</p>
   </section>
   <section>
     <h2>Types of profiling</h2>
     <section>
-      <h2>Local (“DevTools”) profiling</h2>
+      <h2>Local ("DevTools") profiling</h2>
       <p>Whenever you open the developer tools console in the browser, or use
       other tools running on the same device to collect some form of a
       profiler, you are able to gather detailed traces about each and every
@@ -128,87 +137,82 @@
       (PII) is present in the trace (e.g. authentication or user data, etc)
       then it is their own.</p>
       <ol>
-        <li>The developer controls the device; the device contains developer’s
-        data/<a>PII</a>.
+        <li>The developer controls the device; the device contains developer's
+        <a>PII</a>.
         </li>
-        <li>The act of collecting a trace from developer’s device, via whatever
-        tool, is an implicit opt-in to gather a detailed report that may
-        contain their private data.</li>
+        <li>The act of collecting a trace from own device, via whatever tool,
+        is an implicit opt-in to gather a detailed report that may contain
+        their private data.</li>
       </ol>
       <p class="note">Developers should take precautions and scrub <a>PII</a>
       and other sensitive data if and when such tracing reports are shared with
       others, and especially in the public!</p>
     </section>
     <section>
-      <h2>Remote (“RUM”) profiling</h2>
-      <p>Understanding how the application performs on the end-user’s device is
+      <h2>Remote ("RUM") profiling</h2>
+      <p>Understanding how the application performs on the end-user's device is
       critical to delivering a well functioning product. However, collecting
-      such “real user measurement” data is a form of remote (<a>RUM</a>)
+      such "real user measurement" data is a form of remote (<a>RUM</a>)
       profiling, which is subject to additional considerations:</p>
       <ol>
-        <li>Performance API’s and metrics must follow the same-origin security
+        <li>Performance API's and metrics must follow the same-origin security
         model, which is a critical security mechanism for isolating web
-        applications, and users data, from each other - e.g. cookies,
-        navigation history, databases and so on.
+        applications, and users data, from each other—e.g. cookies, navigation
+        history, databases and so on.
           <p class="note">The above requirement is further complicated by the
           fact that the browser offers a number of shared caches that many
           performance-minded developers are understandably interested in (e.g.
           HTTP response cache, memory caches, etc), but that may be (ab)used in
-          a side-channel attack and “leak” data about the user - e.g. timing of
-          a response may reveal if the user has previously or recently visited
-          another origin, and so on.</p>
+          a side-channel attack and "leak" data about the user—e.g. timing of a
+          response may reveal if the user has previously or recently visited
+          another origin; the amount of time to execute some code, or paint
+          some content, can reveal the users state; and so on.</p>
         </li>
         <li>The data contained on the device, belongs to the owner of the
         device—not the developer or the application owner—and likely contains
         private and sensitive information both about the owner, and other
         applications on their device. As a result, the browser cannot allow the
-        same level of “deep profiling” access to the application by default, as
+        same level of "deep profiling" access to the application by default, as
         that may reveal sensitive data about the user and other applications on
         the device.</li>
-        <li>The API’s and metrics that are exposed to the application must take
+        <li>The API's and metrics that are exposed to the application must take
         precautions against enabling new or higher-resolution privacy and
         security attacks against the user.</li>
       </ol>
       <p>In practice, and as a result of the above considerations, many
-      <a>RUM</a> API’s are limited in what they can expose to developers: some
-      “deep profiling” use cases are not possible, some require reduced
-      resolution, and some may surface that a performance problem exists but
-      may not be able to expose why the problem is there. **We cannot and
-      should not expect parity between local and remote profiling
-      capabilities.**</p>
+      <a>RUM</a> API's are limited in what they can expose to developers: some
+      "deep profiling" use cases are simply not possible; some require reduced
+      resolution; and some may surface that a performance problem exists but
+      may not be able to expose why the problem is there.</p>
+      <p>**We cannot and should not expect parity between local and remote
+      profiling capabilities.**</p>
     </section>
   </section>
   <section>
     <h2>Privacy and Security considerations</h2>
     <section>
-      <h2>Fingerprinting and security questionaries</h2>
+      <h2>Fingerprinting and security questionnaires</h2>
       <p>Review and consider the implications of the metric or API against the
       considerations in:</p>
       <ol>
-        <li>
-          <a href=
-          "https://www.w3.org/TR/fingerprinting-guidance/">Fingerprinting
-          Guidance for Web Specification Authors</a>
-        </li>
-        <li>
-          <a href=
-          "https://w3ctag.github.io/security-questionnaire/">Self-Review
-          Questionnaire, Security and Privacy</a>
-        </li>
+        <li>[Fingerprinting Guidance for Web Specification
+        Authors][fingerprinting]</li>
+        <li>[Self-Review Questionnaire, Security and
+        Privacy][sec-questionnaire]</li>
       </ol>
     </section>
     <section>
       <h2>Same-origin security model</h2>
-      <p>Ensure that the proposed API or metric conforms with the same-origin
-      security model: can the new API be used to reveal information about
+      <p>Ensure that the proposed API or metric conforms with the [same-origin
+      security model][sop]: can the new API be used to reveal information about
       another origin? If so, it may need to be restricted, or disallowed.</p>
       <p>For example, Resource Timing API ([[RESOURCE-TIMING]]) provides high
       resolution timestamps for each resource fetch, but some resources are
       fetched from different origins and exposing high-resolution timestamps
-      about such resources can leak data about the user’s navigation history.
-      To mitigate this, Resource Timing API defines the `Timing-Allow-Origin`
-      response header, which acts as an opt-in mechanism that must be provided
-      by the origin before such data is exposed to another origin.</p>
+      about such resources can leak data about the user's navigation history.
+      To mitigate this, Resource Timing API defines the [`Timing-Allow-Origin`
+      response header][tao], which acts as an opt-in mechanism that must be
+      provided by the origin before such data is exposed to another origin.</p>
     </section>
     <section>
       <h2>Side-channel and timing attacks</h2>
@@ -216,50 +220,48 @@
       form of side-channel or timing attacks?</p>
       <p>For example, application developers may want to know precise
       information about renderer-related activities: if and when layout or
-      style-recalc occurs, how long each frame took to render, when the paint
-      happens, and so on. However, access to such high-resolution data can be
-      (ab)used by an attacker to launch a number of high-resolution
-      attacks:</p>
+      style-recalc occurs, how long each frame took to render, if and when some
+      content is painted, and so on. However, access to such high-resolution
+      data could be (ab)used by an attacker to launch a number of
+      high-resolution attacks against the user:</p>
       <ul>
-        <li>Explicit paint notifications can be used to <a href=
-        "https://blog.mozilla.org/security/2010/03/31/plugging-the-css-history-leak/">
-          determine if the :visited link color has changed and a paint was
-          triggered</a>. An attacker could inject hundreds of iframes and
-          rapidly iterate through a large list of URLs to infer user’s
-          navigation history.
-        </li>
+        <li>Explicit paint notifications can be used to [determine if the
+        :visited link color has changed and a paint was triggered][visited]. An
+        attacker could inject hundreds of iframes and rapidly iterate through a
+        large list of URLs to infer user's navigation history.</li>
         <li>In absence of explicit notifications, the timing of how long a
         frame took to process can also reveal if a paint was triggered.</li>
       </ul>
-      <p>Note that some form of above attacks _is_ already possible today by
-      observing rAF timing. However, the key difference is that above examples
-      enable much higher resolution (more accurate and much faster)
-      attacks.</p>
-      <p>To address the above concerns, the Frame Timing API ([[FRAME-TIMING]])
-      is specifically designed to surface slow-only frames - i.e. there are no
-      explicit signals about paint, layout, or exact duration of the frame. As
-      such, Frame Timing does not expose any attack capabilities beyond what is
-      already possible with existing methods. As a corollary, <a>RUM</a> API’s
-      are limited in what they can expose with respect to the rendering
-      pipeline.</p>
+      <p>Note that some forms of above attacks are already possible today.
+      However, the key is not whether it is simply possible, but whether the
+      new API could enable higher resolution (more accurate, or much faster)
+      form of attack.</p>
+      <p>As a practical example, to address the above concerns the Frame Timing
+      API ([[FRAME-TIMING]]) was specifically designed to surface slow-only
+      frames—i.e. there are no explicit signals about paint, layout, or exact
+      duration of the frame. As such, Frame Timing does not expose any attack
+      capabilities beyond what is already possible with existing methods.</p>
+      <p class="note">As a corollary to the above, <a>RUM</a> API's are limited
+      in what they can expose with respect to the rendering pipeline. Proceed
+      with caution in this space.</p>
       <p>As another example, application developers may want to know accurate
-      memory usage of their applications, such that they can: detect memory
+      memory usage of their applications, such that they can detect memory
       leaks and regressions in their code; adjust application logic at runtime,
-      etc.</p>
+      and so on.</p>
       <p>This is valuable data, but the same API could also be (ab)used to
       measure the memory footprint of third-party resources and dependencies,
-      which can leak information about what content is being rendered - e.g. an
+      which can leak information about what content is being rendered—e.g. an
       attacker can figure out if the user is authenticated by comparing the
       memory footprint of the loaded iframe, which can vary based on whether
       the user gets presented with a login page vs authenticated content.</p>
-      <p>One plausible mitigation could be reduced accuracy of the reported
-      used memory. Although, even there, it’s not clear what the minimum
-      thresholds should be, and if such data is useful to developers once this
-      restriction is applied.</p>
+      <p>One plausible mitigation to the above could be reduced accuracy of the
+      reported used memory. Although, even there, it's not immediately clear
+      what the minimum thresholds should be, and if such data is useful to
+      developers once such a restriction is applied.</p>
     </section>
   </section>
   <section>
-    <h2>Best practices for Performance API’s</h2>
+    <h2>Best practices for Performance API's</h2>
     <ol>
       <li>
         <p>**Provide the minimum resolution to address the use case.**</p>
@@ -267,52 +269,54 @@
         Consider strategies to reduce resolution:</p>
         <ul>
           <li>Round or bucket the provided metrics. For example,
-          `DOMHighResolutionTimestamp` ([[HR-TIME]]) is intentionally capped to
-          5 microseconds.</li>
+          `DOMHighResolutionTimestamp` ([[HR-TIME]]) is [capped to 5
+          microseconds][hr-time-resolution].</li>
           <li>Delay delivery of the metric, batch multiple metrics. Processing
           multiple metrics is more efficient and delayed delivery reduces
           accuracy and speed of many runtime attacks.</li>
         </ul>
       </li>
       <li>
-        <p>**Avoid synchronous performance API’s and metrics; use Performance
-        Observer.**</p>
+        <p>**Avoid synchronous performance API's and metrics; use
+        [`PerformanceObserver`][po].**</p>
         <ul>
           <li>Synchronous delivery and access can create performance
           bottlenecks.</li>
-          <li>Asynchronous delivery can help mitigate some forms of privacy and
-          security attacks against the user - see (1).</li>
+          <li>Asynchronous delivery can help slow down and mitigate some forms
+          of attacks - see (1).</li>
         </ul>
       </li>
       <li>
         <p>**Require opt-in mechanisms where necessary.**</p>
         <p>It may be desirable to expose some forms of performance data about
         other origins that an application depends on. However, such data should
-        only be made available with consent of those origins - e.g. see
-        Timing-Allow-Origin.</p>
+        only be made available with consent of those origins.</p>
+        <p>For example, timing data about cross-origin resource fetches is
+        subject to [`Timing-Allow-Origin`][tao] opt-in.</p>
       </li>
       <li>
         <p>**Protect origin-sensitive configuration and data.**</p>
-        <p>Some use cases, such as error or violation reporting, require that
-        changes in configuration of where and whether the report is delivered
-        must be protected from other origins and resources used by the
-        application—e.g. if the page sets a security policy and wants to
-        receive violation reports at a designated report-uri, then a third
-        party script should not be able to change this policy. In such cases,
-        it may not be possible to expose a JavaScript API, and a different
-        mechanism (e.g. HTTP headers) must be used.</p>
-        <p class="note">For example, Network Error Logging intentionally does
-        not expose a JavaScript API to configure where reports are delivered,
-        as that may allow a malicious script to hijack and “hide” such
-        failures.</p>
+        <p>Some use cases, such as error or policy violation reporting, require
+        that changes in configuration of where and whether the report is
+        delivered must be protected from other origins—e.g. if the page sets a
+        security policy and wants to receive violation reports at a designated
+        `report-uri`, then a third party script should not be able to modify
+        this policy. In such cases, it may not be possible to expose a
+        JavaScript API at all, and a different mechanism (e.g. HTTP headers)
+        must be used.</p>
+        <p class="note">For example, Network Error Logging
+        ([[NETWORK-ERROR-LOGGING]]) intentionally does not expose a JavaScript
+        API to configure where reports are delivered, as that may allow a
+        malicious script to hijack and "hide" such failures.</p>
         <p>Some types of data should only be exposed to the origin, and should
         not be accessible to script.</p>
         <p class="note">For example, Network Error Logging reports are
-        delivered via an out-of-band (Reporting API) mechanism to the endpoint
-        designated by the origin. These reports are not exposed at runtime, as
-        that could enable third party resources to traverse and acquire new and
-        private information: navigation history, IP of the user when navigation
-        was initiated, and other sensitive information.</p>
+        delivered via an out-of-band reporting API ([[REPORTING]]) mechanism to
+        the endpoint designated by the origin. These reports are not exposed at
+        runtime, as that could enable third party resources to enumerate them
+        and acquire new and private information: past navigation history, IP of
+        the user when navigation was initiated, and other sensitive
+        information.</p>
       </li>
     </ol>
   </section>
@@ -321,14 +325,15 @@
     <ol>
       <li>
         <p>**The API or metric exposes new, or more accurate, data that may
-        have security and privacy implications. Does this mean we can’t make it
+        have security and privacy implications. Does this mean we can't make it
         available to the web?**</p>
         <p>No. Runtime attacks are an ever-present and existing threat. The
         fact of their existence does not prevent us from making progress and
-        exposing new and useful performance API’s and metrics to web
-        applications, but we need to be careful and consider their implications
-        in each case. Outline the risks, consider the mitigations, and solicit
-        feedback from browser vendors.</p>
+        exposing new and useful performance API's and metrics to web
+        applications. However, we need to be careful and consider their
+        implications on a case by case basis: outline the risks, consider
+        possible mitigations, understand and clearly document the tradeoffs,
+        and solicit wide review before proceeding with implementation.</p>
       </li>
       <li>
         <p>**Can we use out-of-band reporting (OOBR) to mitigate above
@@ -337,20 +342,20 @@
         sensitive configuration and report data that belongs to the application
         origin from resources that belong to another origin and are executed by
         the application. However, the reverse is not true: simple use of OOBR
-        does not grant privilege to the application to report data or metrics
-        that may reveal information about another origin, or the user, as that
-        would violate both the user’s privacy and the same-origin policy
-        enforced by platform.</p>
+        does not grant privilege to the application to report arbitrary data or
+        metrics that may reveal information about another origin, or the user,
+        as that would violate both the user's privacy and the same-origin
+        policy enforced by platform.</p>
       </li>
       <li>
-        <p>**But I really need “deep” profiling, any other options?**</p>
-        <p>Maybe. If you have administrative control of the user’s device (e.g.
+        <p>**But I really need "deep" profiling, any other options?**</p>
+        <p>Maybe. If you have administrative control of the user's device (e.g.
         via corporate policy), or can get the user to explicitly opt-in into a
         mode where they allow such profiling and reporting, you may be able to
         obtain higher-resolution profiling data. However, this is only
-        applicable to select cases, and is generally discouraged, as it likely
-        to reveal a significant amount of private and sensitive data about the
-        user.</p>
+        applicable in select cases, and is generally discouraged, as it is
+        virtually guaranteed to reveal a significant amount of private and
+        sensitive data about the user.</p>
       </li>
     </ol>
   </section>
@@ -361,3 +366,11 @@
   </section>
 </body>
 </html>
+
+[fingerprinting]: https://www.w3.org/TR/fingerprinting-guidance/
+[sec-questionnaire]: https://w3ctag.github.io/security-questionnaire/
+[visited]: https://blog.mozilla.org/security/2010/03/31/plugging-the-css-history-leak/
+[hr-time-resolution]: https://w3c.github.io/hr-time/#privacy-security
+[tao]: http://w3c.github.io/resource-timing/#timing-allow-origin
+[sop]: https://en.wikipedia.org/wiki/Same-origin_policy
+[po]: https://w3c.github.io/performance-timeline/#the-performanceobserver-interface
