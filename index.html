@@ -155,8 +155,8 @@
       such "real user measurement" data is a form of remote (<a>RUM</a>)
       profiling, which is subject to additional considerations:</p>
       <ol>
-        <li>Performance API's and metrics must follow the same-origin security
-        model, which is a critical security mechanism for isolating web
+        <li>Performance API's and metrics must follow the [same-origin security
+        model][sop], which is a critical security mechanism for isolating web
         applications, and users data, from each other—e.g. cookies, navigation
         history, databases and so on.
           <p class="note">The above requirement is further complicated by the
@@ -372,5 +372,5 @@
 [visited]: https://blog.mozilla.org/security/2010/03/31/plugging-the-css-history-leak/
 [hr-time-resolution]: https://w3c.github.io/hr-time/#privacy-security
 [tao]: http://w3c.github.io/resource-timing/#timing-allow-origin
-[sop]: https://en.wikipedia.org/wiki/Same-origin_policy
+[sop]: https://w3ctag.github.io/security-questionnaire/#sop-violations
 [po]: https://w3c.github.io/performance-timeline/#the-performanceobserver-interface
