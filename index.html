@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Performance API's, Security and Privacy</title>
+  <title>Performance APIs, Security and Privacy</title>
   <meta charset='utf-8'>
   <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class=
   'remove'>
@@ -60,7 +60,7 @@
     exposed as runtime JavaScript API in the browser, due to various privacy
     and security constraints. The goal of this document is to explain why that
     is the case, and to provide guidance for what needs to be considered when
-    making or evaluating a proposal for such API's.</p>
+    making or evaluating a proposal for such APIs.</p>
   </section>
   <section id='sotd'>
     <p>This is a <strong>work in progress</strong> and may change without any
@@ -87,7 +87,7 @@
     run applications on a vast array of different hardware and under different
     conditions that are hard or impossible to replicate—and even anticipate—in
     the lab. Hence, <dfn data-lt="RUM">Real User Monitoring</dfn> (RUM), which
-    provides a restricted subset of performance API's and metrics.</p>
+    provides a restricted subset of performance APIs and metrics.</p>
     <p>Why restricted? Due to a number of privacy and security
     considerations:</p>
     <ol>
@@ -96,17 +96,17 @@
       tools, does not automatically mean that it should or can be exposed as a
       runtime API, because such data may reveal private or sensitive
       information about the visitor.</li>
-      <li>API's and metrics that are exposed at runtime to the application
-      (i.e. <a>RUM</a> API's) must take additional precautions against
+      <li>APIs and metrics that are exposed at runtime to the application
+      (i.e. <a>RUM</a> APIs) must take additional precautions against
       unintentionally exposing new or more accurate privacy and security
       attacks against the visitor:
         <ol>
-          <li>Some API's and metrics may require additional opt-in
+          <li>Some APIs and metrics may require additional opt-in
           mechanisms.</li>
-          <li>Some API's and metrics may need to provide data at lower
+          <li>Some APIs and metrics may need to provide data at lower
           resolution - e.g. through reduced accuracy, aggregation, delayed or
           out-of-band delivery, etc.</li>
-          <li>Some API's and metrics may not be possible to expose at all, even
+          <li>Some APIs and metrics may not be possible to expose at all, even
           with above precautions in place.</li>
         </ol>
       </li>
@@ -115,7 +115,7 @@
     is even highly desirable and useful to many developers, does not mean that
     it can be exposed as a runtime JavaScript API.** The goal of this document
     is to explain why that is the case, and to provide guidance for what needs
-    to be considered when making or evaluating a proposal for such API's.</p>
+    to be considered when making or evaluating a proposal for such APIs.</p>
   </section>
   <section>
     <h2>Types of profiling</h2>
@@ -155,7 +155,7 @@
       such "real user measurement" data is a form of remote (<a>RUM</a>)
       profiling, which is subject to additional considerations:</p>
       <ol>
-        <li>Performance API's and metrics must follow the [same-origin security
+        <li>Performance APIs and metrics must follow the [same-origin security
         model][sop], which is a critical security mechanism for isolating web
         applications, and users data, from each other—e.g. cookies, navigation
         history, databases and so on.
@@ -175,12 +175,12 @@
         same level of "deep profiling" access to the application by default, as
         that may reveal sensitive data about the user and other applications on
         the device.</li>
-        <li>The API's and metrics that are exposed to the application must take
+        <li>The APIs and metrics that are exposed to the application must take
         precautions against enabling new or higher-resolution privacy and
         security attacks against the user.</li>
       </ol>
       <p>In practice, and as a result of the above considerations, many
-      <a>RUM</a> API's are limited in what they can expose to developers: some
+      <a>RUM</a> APIs are limited in what they can expose to developers: some
       "deep profiling" use cases are simply not possible; some require reduced
       resolution; and some may surface that a performance problem exists but
       may not be able to expose why the problem is there.</p>
@@ -241,7 +241,7 @@
       frames—i.e. there are no explicit signals about paint, layout, or exact
       duration of the frame. As such, Frame Timing does not expose any attack
       capabilities beyond what is already possible with existing methods.</p>
-      <p class="note">As a corollary to the above, <a>RUM</a> API's are limited
+      <p class="note">As a corollary to the above, <a>RUM</a> APIs are limited
       in what they can expose with respect to the rendering pipeline. Proceed
       with caution in this space.</p>
       <p>As another example, application developers may want to know accurate
@@ -261,7 +261,7 @@
     </section>
   </section>
   <section>
-    <h2>Best practices for Performance API's</h2>
+    <h2>Best practices for Performance APIs</h2>
     <ol>
       <li>
         <p>**Provide the minimum resolution to address the use case.**</p>
@@ -277,7 +277,7 @@
         </ul>
       </li>
       <li>
-        <p>**Avoid synchronous performance API's and metrics; use
+        <p>**Avoid synchronous performance APIs and metrics; use
         [`PerformanceObserver`][po].**</p>
         <ul>
           <li>Synchronous delivery and access can create performance
@@ -329,7 +329,7 @@
         available to the web?**</p>
         <p>No. Runtime attacks are an ever-present and existing threat. The
         fact of their existence does not prevent us from making progress and
-        exposing new and useful performance API's and metrics to web
+        exposing new and useful performance APIs and metrics to web
         applications. However, we need to be careful and consider their
         implications on a case by case basis: outline the risks, consider
         possible mitigations, understand and clearly document the tradeoffs,
