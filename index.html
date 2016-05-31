@@ -56,10 +56,10 @@
 <body>
   <section id='abstract'>
     <p>The fact that something is possible to measure, and may even be highly
-    desirable and useful to expose to developers, does not meant that it can be
+    desirable and useful to expose to developers, does not mean that it can be
     exposed as runtime JavaScript API in the browser, due to various privacy
     and security constraints. The goal of this document is to explain why that
-    is the case, and to provide guidance for what needs to be considered when
+    is the case and to provide guidance for what needs to be considered when
     making or evaluating a proposal for such APIs.</p>
   </section>
   <section id='sotd'>
@@ -88,18 +88,17 @@
     conditions that are hard or impossible to replicate—and even anticipate—in
     the lab. Hence, <dfn data-lt="RUM">Real User Monitoring</dfn> (RUM), which
     provides a restricted subset of performance APIs and metrics.</p>
-    <p>Why restricted? Due to a number of privacy and security
-    considerations:</p>
+    <p>Why restricted? Due to many privacy and security considerations:</p>
     <ol>
       <li>The fact that a certain capability or metric can be recorded by the
       platform or browser, and may even be exposed in browser's developer
       tools, does not automatically mean that it should or can be exposed as a
-      runtime API, because such data may reveal private or sensitive
-      information about the visitor.</li>
-      <li>APIs and metrics that are exposed at runtime to the application
-      (i.e. <a>RUM</a> APIs) must take additional precautions against
-      unintentionally exposing new or more accurate privacy and security
-      attacks against the visitor:
+      runtime API because such data may reveal private or sensitive information
+      about the visitor.</li>
+      <li>APIs and metrics that are exposed at runtime to the application (i.e.
+      <a>RUM</a> APIs) must take additional precautions against unintentionally
+      exposing new or more accurate privacy and security attacks against the
+      visitor:
         <ol>
           <li>Some APIs and metrics may require additional opt-in
           mechanisms.</li>
@@ -114,7 +113,7 @@
     <p>**In short, just because something is possible to measure, and perhaps
     is even highly desirable and useful to many developers, does not mean that
     it can be exposed as a runtime JavaScript API.** The goal of this document
-    is to explain why that is the case, and to provide guidance for what needs
+    is to explain why that is the case and to provide guidance for what needs
     to be considered when making or evaluating a proposal for such APIs.</p>
   </section>
   <section>
@@ -130,12 +129,11 @@
       processing, and so on.</p>
       <p>Such profiling tools capture rich traces with a lot of data and are
       often invaluable in helping identify and resolve performance issues. The
-      fact that the developer is able to observe this data about their own
-      system does not expose new concerns from a privacy or security
-      standpoint: the developer is collecting information about their own
-      system; if <dfn data-lt="PII">personally identifiable information</dfn>
-      (PII) is present in the trace (e.g. authentication or user data, etc)
-      then it is their own.</p>
+      fact that the developer can observe this data about their system does not
+      expose new concerns from a privacy or security standpoint: the developer
+      is collecting information about their system; if <dfn data-lt=
+      "PII">personally identifiable information</dfn> (PII) is present in the
+      trace (e.g. authentication or user data, etc.) then it is their own.</p>
       <ol>
         <li>The developer controls the device; the device contains developer's
         <a>PII</a>.
@@ -150,7 +148,7 @@
     </section>
     <section>
       <h2>Remote ("RUM") profiling</h2>
-      <p>Understanding how the application performs on the end-user's device is
+      <p>Understanding how the application performs on the end user's device is
       critical to delivering a well functioning product. However, collecting
       such "real user measurement" data is a form of remote (<a>RUM</a>)
       profiling, which is subject to additional considerations:</p>
@@ -162,13 +160,13 @@
           <p class="note">The above requirement is further complicated by the
           fact that the browser offers a number of shared caches that many
           performance-minded developers are understandably interested in (e.g.
-          HTTP response cache, memory caches, etc), but that may be (ab)used in
-          a side-channel attack and "leak" data about the user—e.g. timing of a
-          response may reveal if the user has previously or recently visited
-          another origin; the amount of time to execute some code, or paint
-          some content, can reveal the users state; and so on.</p>
+          HTTP response cache, memory caches, etc.), but that may be (ab)used
+          in a side-channel attack and "leak" data about the user—e.g. timing
+          of a response may reveal if the user has previously or recently
+          visited another origin; the amount of time to execute some code, or
+          paint some content, can reveal the users state; and so on.</p>
         </li>
-        <li>The data contained on the device, belongs to the owner of the
+        <li>The data contained on the device belongs to the owner of the
         device—not the developer or the application owner—and likely contains
         private and sensitive information both about the owner, and other
         applications on their device. As a result, the browser cannot allow the
@@ -182,8 +180,8 @@
       <p>In practice, and as a result of the above considerations, many
       <a>RUM</a> APIs are limited in what they can expose to developers: some
       "deep profiling" use cases are simply not possible; some require reduced
-      resolution; and some may surface that a performance problem exists but
-      may not be able to expose why the problem is there.</p>
+      resolution; some may surface that a performance problem exists but may
+      not be able to expose why the problem is there.</p>
       <p>**We cannot and should not expect parity between local and remote
       profiling capabilities.**</p>
     </section>
@@ -206,13 +204,14 @@
       <p>Ensure that the proposed API or metric conforms with the [same-origin
       security model][sop]: can the new API be used to reveal information about
       another origin? If so, it may need to be restricted, or disallowed.</p>
-      <p>For example, Resource Timing API ([[RESOURCE-TIMING]]) provides high
-      resolution timestamps for each resource fetch, but some resources are
-      fetched from different origins and exposing high-resolution timestamps
-      about such resources can leak data about the user's navigation history.
-      To mitigate this, Resource Timing API defines the [`Timing-Allow-Origin`
-      response header][tao], which acts as an opt-in mechanism that must be
-      provided by the origin before such data is exposed to another origin.</p>
+      <p>For example, Resource Timing API ([[RESOURCE-TIMING]]) provides
+      high-resolution timestamps for each resource fetch, but some resources
+      are fetched from different origins and exposing high-resolution
+      timestamps about such resources can leak data about the user's navigation
+      history. To mitigate this, Resource Timing API defines the
+      [`Timing-Allow-Origin` response header][tao], which acts as an opt-in
+      mechanism that must be provided by the origin before such data is exposed
+      to another origin.</p>
     </section>
     <section>
       <h2>Side-channel and timing attacks</h2>
@@ -272,7 +271,7 @@
           `DOMHighResolutionTimestamp` ([[HR-TIME]]) is [capped to 5
           microseconds][hr-time-resolution].</li>
           <li>Delay delivery of the metric, batch multiple metrics. Processing
-          multiple metrics is more efficient and delayed delivery reduces
+          multiple metrics is more efficient, and delayed delivery reduces
           accuracy and speed of many runtime attacks.</li>
         </ul>
       </li>
@@ -290,7 +289,7 @@
         <p>**Require opt-in mechanisms where necessary.**</p>
         <p>It may be desirable to expose some forms of performance data about
         other origins that an application depends on. However, such data should
-        only be made available with consent of those origins.</p>
+        only be made available with the consent of those origins.</p>
         <p>For example, timing data about cross-origin resource fetches is
         subject to [`Timing-Allow-Origin`][tao] opt-in.</p>
       </li>
@@ -353,7 +352,7 @@
         via corporate policy), or can get the user to explicitly opt-in into a
         mode where they allow such profiling and reporting, you may be able to
         obtain higher-resolution profiling data. However, this is only
-        applicable in select cases, and is generally discouraged, as it is
+        applicable in select cases and is generally discouraged, as it is
         virtually guaranteed to reveal a significant amount of private and
         sensitive data about the user.</p>
       </li>
