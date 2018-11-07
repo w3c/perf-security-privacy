@@ -4,8 +4,7 @@
   <title>Performance APIs, Security and Privacy</title>
   <meta charset='utf-8'>
   <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class=
-  'remove'>
-  </script>
+  'remove'></script>
   <script class='remove'>
   var respecConfig = {
     shortName: "perf-security-privacy",
@@ -68,12 +67,12 @@
   </section>
   <section>
     <h2>Introduction</h2>
-    <p>**Performance is a feature.** Modern browsers provide extensive tooling
-    to help developers understand and optimize their applications:
-    network-layer insights about the requests (timing, cache, request and
-    response payload, etc); rendering insights (cost of layout and style
-    recalculations, image decoding, per-layer rendering costs, idle time, etc);
-    CPU and memory profiling; JavaScript debugging, and much more. As a
+    <p><strong>Performance is a feature.</strong> Modern browsers provide
+    extensive tooling to help developers understand and optimize their
+    applications: network-layer insights about the requests (timing, cache,
+    request and response payload, etc); rendering insights (cost of layout and
+    style recalculations, image decoding, per-layer rendering costs, idle time,
+    etc); CPU and memory profiling; JavaScript debugging, and much more. As a
     developer, you can open the "developer tools" console in any browser and
     get immediate access to a rich set of data:</p>
     <ul>
@@ -110,11 +109,12 @@
         </ol>
       </li>
     </ol>
-    <p>**In short, just because something is possible to measure, and perhaps
-    is even highly desirable and useful to many developers, does not mean that
-    it can be exposed as a runtime JavaScript API.** The goal of this document
-    is to explain why that is the case and to provide guidance for what needs
-    to be considered when making or evaluating a proposal for such APIs.</p>
+    <p><strong>In short, just because something is possible to measure, and
+    perhaps is even highly desirable and useful to many developers, does not
+    mean that it can be exposed as a runtime JavaScript API.</strong> The goal
+    of this document is to explain why that is the case and to provide guidance
+    for what needs to be considered when making or evaluating a proposal for
+    such APIs.</p>
   </section>
   <section>
     <h2>Types of profiling</h2>
@@ -153,10 +153,11 @@
       such "real user measurement" data is a form of remote (<a>RUM</a>)
       profiling, which is subject to additional considerations:</p>
       <ol>
-        <li>Performance APIs and metrics must follow the [same-origin security
-        model][sop], which is a critical security mechanism for isolating web
-        applications, and users' data, from each other—e.g. cookies, navigation
-        history, databases and so on.
+        <li>Performance APIs and metrics must follow the <a href=
+        "https://w3ctag.github.io/security-questionnaire/#sop-violations">same-origin
+        security model</a>, which is a critical security mechanism for
+        isolating web applications, and users' data, from each other—e.g.
+        cookies, navigation history, databases and so on.
           <p class="note">The above requirement is further complicated by the
           fact that the browser offers a number of shared caches that many
           performance-minded developers are understandably interested in (e.g.
@@ -182,8 +183,8 @@
       "deep profiling" use cases are simply not possible; some require reduced
       resolution; some may surface that a performance problem exists but may
       not be able to expose why the problem is there.</p>
-      <p>**We cannot and should not expect parity between local and remote
-      profiling capabilities.**</p>
+      <p><strong>We cannot and should not expect parity between local and
+      remote profiling capabilities.</strong></p>
     </section>
   </section>
   <section>
@@ -193,25 +194,31 @@
       <p>Review and consider the implications of the metric or API against the
       considerations in:</p>
       <ol>
-        <li>[Fingerprinting Guidance for Web Specification
-        Authors][fingerprinting]</li>
-        <li>[Self-Review Questionnaire, Security and
-        Privacy][sec-questionnaire]</li>
+        <li>
+          <a data-cite="fingerprinting-guidance">Fingerprinting Guidance for
+          Web Specification Authors</a>
+        </li>
+        <li>
+          <a href=
+          "https://w3ctag.github.io/security-questionnaire/">Self-Review
+          Questionnaire, Security and Privacy</a>
+        </li>
       </ol>
     </section>
     <section>
       <h2>Same-origin security model</h2>
-      <p>Ensure that the proposed API or metric conforms with the [same-origin
-      security model][sop]: can the new API be used to reveal information about
+      <p>Ensure that the proposed API or metric conforms with the <a href=
+      "https://w3ctag.github.io/security-questionnaire/#sop-violations">same-origin
+      security model</a>: can the new API be used to reveal information about
       another origin? If so, it may need to be restricted, or disallowed.</p>
       <p>For example, Resource Timing API ([[RESOURCE-TIMING]]) provides
       high-resolution timestamps for each resource fetch, but some resources
       are fetched from different origins and exposing high-resolution
       timestamps about such resources can leak data about the user's navigation
-      history. To mitigate this, Resource Timing API defines the
-      [`Timing-Allow-Origin` response header][tao], which acts as an opt-in
-      mechanism that must be provided by the origin before such data is exposed
-      to another origin.</p>
+      history. To mitigate this, Resource Timing API defines the <a data-cite=
+      "resource-timing#timing-allow-origin"><code>Timing-Allow-Origin</code>
+      response header</a>, which acts as an opt-in mechanism that must be
+      provided by the origin before such data is exposed to another origin.</p>
     </section>
     <section>
       <h2>Side-channel and timing attacks</h2>
@@ -224,10 +231,13 @@
       data could be (ab)used by an attacker to launch a number of
       high-resolution attacks against the user:</p>
       <ul>
-        <li>Explicit paint notifications can be used to [determine if the
-        :visited link color has changed and a paint was triggered][visited]. An
-        attacker could inject hundreds of iframes and rapidly iterate through a
-        large list of URLs to infer user's navigation history.</li>
+        <li>Explicit paint notifications can be used to <a href=
+        "https://blog.mozilla.org/security/2010/03/31/plugging-the-css-history-leak/">
+          determine if the :visited link color has changed and a paint was
+          triggered</a>. An attacker could inject hundreds of iframes and
+          rapidly iterate through a large list of URLs to infer user's
+          navigation history.
+        </li>
         <li>In absence of explicit notifications, the timing of how long a
         frame took to process can also reveal if a paint was triggered.</li>
       </ul>
@@ -263,21 +273,25 @@
     <h2>Best practices for Performance APIs</h2>
     <ol>
       <li>
-        <p>**Provide the minimum resolution to address the use case.**</p>
+        <p><strong>Provide the minimum resolution to address the use
+        case.</strong></p>
         <p>Real-time, high-resolution metrics enable higher accuracy attacks.
         Consider strategies to reduce resolution:</p>
         <ul>
           <li>Round or bucket the provided metrics. For example,
-          `DOMHighResolutionTimestamp` ([[HR-TIME]]) is [capped to 5
-          microseconds][hr-time-resolution].</li>
+          <code>DOMHighResolutionTimestamp</code> ([[HR-TIME]]) is
+            <a data-cite="hr-time#privacy-security">capped to 5
+            microseconds</a>.
+          </li>
           <li>Delay delivery of the metric, batch multiple metrics. Processing
           multiple metrics is more efficient, and delayed delivery reduces
           accuracy and speed of many runtime attacks.</li>
         </ul>
       </li>
       <li>
-        <p>**Avoid synchronous performance APIs and metrics; use
-        [`PerformanceObserver`][po].**</p>
+        <p><strong>Avoid synchronous performance APIs and metrics; use
+        <a data-cite=
+        "performance-timeline#the-performanceobserver-interface"><code>PerformanceObserver</code></a>.</strong></p>
         <ul>
           <li>Synchronous delivery and access can create performance
           bottlenecks.</li>
@@ -286,22 +300,25 @@
         </ul>
       </li>
       <li>
-        <p>**Require opt-in mechanisms where necessary.**</p>
+        <p><strong>Require opt-in mechanisms where necessary.</strong></p>
         <p>It may be desirable to expose some forms of performance data about
         other origins that an application depends on. However, such data should
         only be made available with the consent of those origins.</p>
         <p>For example, timing data about cross-origin resource fetches is
-        subject to [`Timing-Allow-Origin`][tao] opt-in.</p>
+        subject to <a data-cite=
+        "resource-timing#timing-allow-origin"><code>Timing-Allow-Origin</code>
+        opt-in</a>.</p>
       </li>
       <li>
-        <p>**Protect origin-sensitive configuration and data.**</p>
+        <p><strong>Protect origin-sensitive configuration and
+        data.</strong></p>
         <p>Some use cases, such as error or policy violation reporting, require
         that changes in configuration of where and whether the report is
         delivered must be protected from other origins—e.g. if the page sets a
         security policy and wants to receive violation reports at a designated
-        `report-uri`, then a third party script should not be able to modify
-        this policy. In such cases, it may not be possible to expose a
-        JavaScript API at all, and a different mechanism (e.g. HTTP headers)
+        <code>report-uri</code>, then a third party script should not be able
+        to modify this policy. In such cases, it may not be possible to expose
+        a JavaScript API at all, and a different mechanism (e.g. HTTP headers)
         must be used.</p>
         <p class="note">For example, Network Error Logging
         ([[NETWORK-ERROR-LOGGING]]) intentionally does not expose a JavaScript
@@ -323,9 +340,9 @@
     <h2>FAQ</h2>
     <ol>
       <li>
-        <p>**The API or metric exposes new, or more accurate, data that may
-        have security and privacy implications. Does this mean we can't make it
-        available to the web?**</p>
+        <p><strong>The API or metric exposes new, or more accurate, data that
+        may have security and privacy implications. Does this mean we can't
+        make it available to the web?</strong></p>
         <p>No. Runtime attacks are an ever-present and existing threat. The
         fact of their existence does not prevent us from making progress and
         exposing new and useful performance APIs and metrics to web
@@ -335,8 +352,8 @@
         and solicit wide review before proceeding with implementation.</p>
       </li>
       <li>
-        <p>**Can we use out-of-band reporting (OOBR) to mitigate above
-        risks?**</p>
+        <p><strong>Can we use out-of-band reporting (OOBR) to mitigate above
+        risks?</strong></p>
         <p>No. OOBR may be used as a mechanism to isolate some types of
         sensitive configuration and report data that belongs to the application
         origin from resources that belong to another origin and are executed by
@@ -347,7 +364,8 @@
         policy enforced by platform.</p>
       </li>
       <li>
-        <p>**But I really need "deep" profiling, any other options?**</p>
+        <p><strong>But I really need "deep" profiling, any other
+        options?</strong></p>
         <p>Maybe. If you have administrative control of the user's device (e.g.
         via corporate policy), or can get the user to explicitly opt-in into a
         mode where they allow such profiling and reporting, you may be able to
@@ -365,11 +383,3 @@
   </section>
 </body>
 </html>
-
-[fingerprinting]: https://www.w3.org/TR/fingerprinting-guidance/
-[sec-questionnaire]: https://w3ctag.github.io/security-questionnaire/
-[visited]: https://blog.mozilla.org/security/2010/03/31/plugging-the-css-history-leak/
-[hr-time-resolution]: https://w3c.github.io/hr-time/#privacy-security
-[tao]: http://w3c.github.io/resource-timing/#timing-allow-origin
-[sop]: https://w3ctag.github.io/security-questionnaire/#sop-violations
-[po]: https://w3c.github.io/performance-timeline/#the-performanceobserver-interface
